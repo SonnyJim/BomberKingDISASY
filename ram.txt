@@ -1,0 +1,14 @@
+0x000E P1 Buttons
+0x004C Player bomb count
+0x0061 item_boots
+0x0062 item_clock
+0x0063 item_lightning
+0x0064 item_4way
+0x0065 item_candle
+0x0066 item_energy
+0x0067 item_rockets
+0x0076 Player X
+0x0077 Player Y
+0x0078 Player direction
+0x0098 Level number
+0xE588 

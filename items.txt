@@ -1,0 +1,27 @@
+Inventory base is at 0x4D
+
+Offset:
+0x00	item_megaton
+0x01	item_lifevest
+0x02	item_lantern 
+0x03	item_candle/shop bought/ Key icon when tile data
+0x0B	item_medal
+0x0C	item_points_100
+0x0D	item_points_1000
+0x0E	item_points_10k
+0x0F	item_points_???
+0x10	item_magicalbee //Randomly changes into candle/energy/rocket/boots/4-way
+0x11	item_shotpower
+0x12	item_unknown
+0x13	item_battery
+0x14	item_boots
+0x15	item_clock
+0x16	item_lightning
+0x17	item_4way
+0x18	item_candle
+0x19	item_energy
+0x1A	item_rocket
+0x1B	item_bombs
+0x1C	item_chalice
+0x1D	item_key
+0x1E	item_underground

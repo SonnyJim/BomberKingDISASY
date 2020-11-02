@@ -1,0 +1,2 @@
+For some reason it checks for start + select held on the game over screen?
+07:E21A:C9 30     CMP #$30 <- Change that for a longer bomb time

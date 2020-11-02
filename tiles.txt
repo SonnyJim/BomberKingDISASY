@@ -1,0 +1,76 @@
+
+
+Seems to be two sets of tile location data, one thats read directly from the ROM that contains the basic level items, then another which reads the newly created tiles, like random item drops.
+
+If the tile is in tile2 data and covered by a tile1 block, then it is stored normally (ie as 0x02 for a lifevest).  When the tile1 block gets destroyed, the tile2 data gets OR'd with 0x80 (high bit set).
+
+tile data is kept at offsets 0x2FC and 0x03D9.  It's copied from ROM location $TIMALLEN
+
+Board size is 13x16(?) tall, 
+
+0x01		Lifevest
+0x02		Lantern
+0x03		Key
+0x04		Blank item?
+0x05 - 07 	hex tiles
+0x08		Beehive?
+0x09 - 0A  	unused
+0x0B		Medal
+0x0C		Points 100
+0x0D		Points 1000
+0x0E		Points 10000
+0x0F		Points 100000
+0x10		item_magicalbee //Randomly changes into candle/energy/rocket/boots/4-way
+0x11		item_shotpower
+0x12		item_unknown
+0x13		item_battery
+0x14		item_boots
+0x15		item_clock
+0x16		item_lightning
+0x17		item_4way
+0x18		item_candle
+0x19		item_energy
+0x1A		item_rocket
+0x1B		item_bombs
+0x1C		item_chalice
+0x1D		item_key
+0x1E		item_underground
+0x1F		item_overground //Steps leading back up
+0x20		Blank
+0x21		Bottom of rock tile?
+0x22		Bottom of tree?
+0x23		Twigs?
+0x24		Twigs?
+0x25		Rock
+0x26		Dirt
+0x27		Exit
+0x28		Water
+0x29		Waterfall
+0x2A		Magic pool
+0x2B - 0x7F	 hex tiles 	
+0x80 - 0x8C	 Various bushes
+0x8D		Hex tile
+0x8E		Idol top
+0x8F		Idol bottom
+0x90 - 0xA7	 The same bush
+0xA8		Some Rock
+0xA9		hextile
+0xAA		Bottom of Some Rock
+0xAB		Black /probably hextile
+0xAC - 0xBF	hex tiles
+0xC0		Frangible wall, 1 hit
+0xC1		Frangible wall, 2 hits
+0xC2		Frangible wall, 3 hits
+0xC3		Frangible wall, 4 hits
+0xC3		Frangible wall, 3 hits ??
+0xC4		Frangible wall, 3 hits ??
+0xC5		Frangible wall, 5 hits
+0xC7		Frangible wall, 7 hits, leaves behind a megaton
+0xCF - 0xE4	hex tiles
+0xE5 - 0xEA	various rock tiles
+0xEB		stage wall boundary
+0xEC		Another waterfall?
+0XED		Waterfall bottom
+0xEE		Rock top unbeveled
+0xEF		Rock bottom beveled right corner
+0xF0 - 0xFF 	The same goddamn rock

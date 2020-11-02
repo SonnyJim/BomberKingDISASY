@@ -1,0 +1,12 @@
+0x83 is some kind of sprite select variable?
+
+
+0x00		Player South 1
+0x01		Player South 2
+0x02		Player South 3
+0x03		Player South 4
+0x04		Player North 1
+
+0x32		Shadow?
+0x61		Grunt
+
