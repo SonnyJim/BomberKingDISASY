@@ -1,4 +1,4 @@
 # BomberKingDISASY
-Disassembly of Bomber King for the Famicom
+Disassembly of Bomber King for the Famicom using FCEUX:
 
-Maybe make an SDL based level editor, that would be cool.
+http://fceux.com/web/home.html
