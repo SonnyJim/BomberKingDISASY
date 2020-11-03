@@ -30,13 +30,14 @@ effects is at 0x00FB, write the following to make a noise
 0x0E	Energy item use
 0x0F	Rocket
 0x10	Damage?
-0x11	Boss damage
-0x12	Boss again?
+0x11	Boss 'groan'
+0x12	Boss damage?
 0x13	Another explosion
 0x14	Pause
 0x15	Small explosion
 0x16	?
 0x17	?
+0x1D	Lightning?
 0x1E	? / Shop not enough medals
 0x1F	Boss damage?
 0x21	Drowing ?

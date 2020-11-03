@@ -1,201 +1,285 @@
-$F58E#p1_bombcount_check?#
-$C1F9#exit_sub#
-$C69A#init_health#
-$C1C8#bombs_SetTo10#Check if we have ten bombs, if not, set bombs to 10
-$C1D5#init_startgame_playervars#
-$C1FF#level_init_playervars#
-$E05B#zero_c4-c9#
-$F28C#zero_health#
-$F296#health_decrease_by_a#Decreases the health by LSRxA reg 
-$F2AA#health_use_a_major#Fills up minor with major.
-$E0A7#bomb_planted?ormaybeinpit?#
-$D000#input_read_complete#Reading the controller ports complete, now smooshing the data?
-$CFD3#input_read_start?#
-$C6D0#debug_mode_check#
+$C009#vblank_wait#
+$C027#subscreen?#
+$C060#shop_medal_draw?#
+$C072#sprite_buffer_check_jmp#
 $C0D0#BOOT#
-$C0ED#init_ram_clear#Fucking weird way of doing it, though
-$C390#debug_another_check#
-$F22A#energy_meter_decrement_check#energy timer only ticks every 6 passes
-$C546#?_buffer_copy#
-$C567#end_sub#
-$F23D#end_sub#
-$CCC7#Clear 0x0016 / wait VBLANK#Also clears PPU_MASK, probably because they want to draw to it outside of VBLANK?
-$CDAC#clear some addresses#
 $C0E3#Wait for VBLANK#
 $C0E8#Wait for 2nd VBLANK#
-$CCD9#wait for VBLANK#
-$CD45#some sub#
-$CD00#write A to PPU_CTRL#
-$CD50#clear p1 input and others#
-$CC9C#Set VRAM address#This should set the VRAM address we want to write to
-$CCA2#set PPUSCROLL to 0,0#
-$CCAC#everything but bit 0#
-$CD72#Set VRAM to 0x2000#
-$CC98#Store A to PPU_DATA#
-$CD8E#Clear PPU loop#
-$CD9E#Clear VRAM C0's#Seems to do 23C0 and 27C0
-$C1ED#clear_player_items#
-$F49E#rng?  Scorebased?#
-$C1AE#Half bomb count#
-$E162#debug_check_skip_bomddec#
-$D3E2#some_sub#Store X to 0x36 for later retrieval, See 
-$F5BD#draw_number?#Seems to be responsible for fetching the tile for numbers
-$E0D0#end_sub#
-$E0B8#debug_skip_check#Don't bother to check if we have any bombs in inventory if debug or demo mode is turned on
-$E0C1#bomb_check_inventory#Check to see if we have any bombs in the inventory
-$ED9C#end_sub#
-$ED90#item_get#First it checks for demo_running, then checks we have less than 100 of an item, then increments it.  X reg contains the offset
-$CD06#bankswitch_sub_var#offset comes from bankswitch_current, keeps the value of X
-$E526#random_item_get#Generates a random item (X reg) based off a few things, like how many bombs the player has
-$E544#badluck_noitem#
-$E563#badluck_noitem#
-$C060#shop_medal_draw?#
-$E9AF#subscr_item_check#Check to see if we have more than zero of an item 
-$E9D3#subscr_item_more_than_zero#
-$E994#subscr_itemcount_check#
-$E99C#subscr_item>0#
-$CDC6#wait#Wait until 0x17 is zero?
-$D00C#inputread#Get the input, not it and write it to another var
+$C0ED#init_ram_clear#Fucking weird way of doing it, though
+$C13A#clear_defense_and_levelnum#
+$C16B#clear_subscrsel_and_shotrange#
 $C178#demoflag_set#
-$F3AA#health_rol#
-$F40D#ppu_get_data?#
-$CE0B#end_sub#
+$C1AE#Half bomb count#
+$C1C8#bombs_SetTo10#Check if we have ten bombs, if not, set bombs to 10
+$C1D5#init_startgame_playervars#
+$C1ED#clear_player_items#
+$C1F9#exit_sub#
+$C1FF#level_init_playervars#
+$C20F#level_check_for_end#
 $C23A#demo_something?#
-$CDEA#write FB with 4 byte padding?#
-$D87A#write_tile_data#Gets tile data and offset, writes it to the tile data buffer
-$D86C#tile_set_offset#Loads the address from 0x27, which is 9AA0 + whatever is in the A reg
-$D88C#inc_tile_data_count#Increment, load into A, check to see if we've hit 0x0D times
-$D86A#tile_loop_continue#
-$D866#tile_loop_reset#
-$DB95#tile_loop_special_tile?#Does this check to see if a tile placed was a special one?
-$EA00#get_tile2_data#(Tile2 data & 0x7F) - 1 = tile data
-$EBA0#tile2_get_data#Get's the tile2 data from offset Y
-$EA2D#key_check#Have we found the key yet?
-$EA2C#end_sub#
-$EADB#wipe_tmp_tile_data#
-$DEAA#bullet_clear#
+$C255#clear_player_attributes#Seems to do a clean sweep here, be good to dig around
+$C30D#skip_player_init#
+$C390#debug_another_check#
+$C3D7#button_a_pressed?#
+$C41B#jsr_inputread#
+$C41E#input_check_death#Checks to see if we are holding Select and Start on the game over screen
+$C42A#clr_00fa#
+$C457#level_increment#
+$C461#underground_is_set?#
+$C46B#underground_clear#
+$C546#?_buffer_copy#
+$C551#buffer2_offset#set to 0x0C
+$C553#copy_buffer#loop_16_times
+$C567#end_sub#
+$C568#?_buffer1#
+$C5A3#clear_darkness#
+$C601#underground_start?#
 $C689#init_level_check#if 01F4 != 0, clear carry, if level == 1, carry set.  Maybe something to do with the bonus rooms?
 $C696#carry_clear#
 $C698#carry_set#
-$C30D#skip_player_init#
-$C009#vblank_wait#
-$CD81#set VRAM to 0x2000#
-$CDC0#set_input_read#
-$C3D7#button_a_pressed?#
-$DDBE#check_for_select#
-$DDC5#open subscreen?#
-$FFF0#unrom_bankswitch#
-$CFBB#bs_check#are we on bank 4?
-$C41E#input_check_death#Checks to see if we are holding Select and Start on the game over screen
-$D478#clear_01c5_0041#
-$CBFE#debug_walk_check#Checks to see if debug_flag and select + B is held down.  Sets carry if true
-$CBD9#wall_collision_sub?#
-$CBA2#move_left#
-$CA49#set_player_direction#Loads up the player input and mings it through a couple of LSRs to find which d-pad button is pressed
-$C41B#jsr_inputread#
-$C42A#clr_00fa#
-$E16C#place_bomb#
-$E212#bombtimer_sub#
-$E21E#Bomb pop?#02 = Explosion
-$EAF1#sfx_pickup_item#
-$D3E5#bankswitch_wait_for_bank4#
-$C027#subscreen?#
-$E7A2#subscreen_start?#
-$C457#level_increment#
-$C20F#level_check_for_end#
-$E5C6#item_use_candle#
-$E83C#end_sub#
-$E820#item_lamp/latern_use#Don't use item if stage already bright or if candle already in use
-$EA0D#tmp_tile_data_zero#
-$C46B#underground_clear#
-$EE47#underground_end#
-$C461#underground_is_set?#
-$C601#underground_start?#
-$E620#zero_6d_and_candletime#
-$F25F#bomb_hit_player#Bomb or missile, Y reg = how much damage
-$E580#bombs_add_10#Does some boundchecks
-$C16B#clear_subscrsel_and_shotrange#
-$C5A3#clear_darkness#
-$E99F#turn off level_darkness#
-$E815#subscr_select_lamp/latern#subscr_item_selection is +1 more than inventory base offset
-$F23E#bomb_hit_player_sub?#
-$C13A#clear_defense_and_levelnum#
-$F2A5#health_minor_empty#Triggered when health_minor hits zero
-$F2B4#end_sub#
-$F2E6#sfx_play_dead#
-$F25A#check_zero_health#
-$E2A9#bomb_pickup#Play sound, check if we are in a demo, then increment if bombs < 100
-$E2BC#end_sub#
+$C69A#init_health#
+$C6BF#sfx_stop#
+$C6D0#debug_mode_check#
+$C725#sfx_player_hit#
+$C73B#carry_set_0x1FB | 2#
+$C745#carry_clear#
 $C747#sprite_collsion?#Checks to see if the player is colliding with a sprite\n.  Sets the carry flag to indicate condition
-$E2BF#end_sub#
 $C76F#end_sub_clear_carry#
-$CDD7#;#Clear some locations, update the anim_timer
-$CB7E#skip_increment#
+$C77D#forcefield_check#
+$C7AC#draw_player?#
+$C7CE#player_draw#Looks like we are copying the player location to update the OAM sprite
+$C8B2#draw_shadow#
+$C8B9#water_check#Checks to see if we are stood on water (0x28 = water, 0x29 = waterfall)
+$C8C4#drowning_check#Returns carry set if drowning
+$C8CB#stood_on_water#
+$C8D8#carry_set#
+$C8DA#sprite_selections?#
+$C93A#forcefield_active_inc#
+$C948#end_sub#
+$C949#level!=0and e5#
+$C951#carry_set#
+$C953#carry_clear#
+$C954#end_sub#
+$C977#drowning_check#
+$C9A9#not_drowning#
+$C9C0#sfx_play_dead#
+$C9EB#;#Load input into stack, wipe it
+$CA49#set_player_direction#Loads up the player input and mings it through a couple of LSRs to find which d-pad button is pressed
+$CA82#input_clear#
+$CACE#end_sub#
 $CB6D#screen_scroll_check#check if we are past the middle of the screen
-$DADE#end_sub#
-$DAB2#level_scroller?#If level_scroll != 12 scroll level?
-$EA9D#clear_bomb_count#
-$D419#wait_some_cycles#However long it takes to DEX + BNE 169 times
-$CD13#bankswitch_sub_a#
+$CB7E#skip_increment#
+$CBA2#move_left#
+$CBD9#wall_collision_sub?#
+$CBFE#debug_walk_check#Checks to see if debug_flag and select + B is held down.  Sets carry if true
+$CC14#carry_clear#
+$CC16#jsr_CC71#
+$CC19#sub_start#if gfx_inloop_zp + 0x02B >= 11, subtract 11, store it,
+$CC35#buffer_store#Write non-zero to g_buf_sel to use the second buffer
 $CC45#tile_write_to_buffer#
 $CC61#;#if 0x00CD != 0, then write tile type to a different buffer?
 $CC6B#alternate_tile_buffer#
-$E6F3#;#if 0x01CF >= 2 End; If 0x01CD != 11 Continue
-$E713#end_sub#
-$E6F0#E714#
-$CC35#buffer_store#Write non-zero to g_buf_sel to use the second buffer
-$E767#end_sub#
-$E721#sub_start?#
-$E714#copy_loop_vars_to_zero_page#
-$CC19#sub_start#if gfx_inloop_zp + 0x02B >= 11, subtract 11, store it, 
-$E32E#carry_set#
-$E319#check_tile_buffer#It's a true or false response, but I'll be buggered if I can't work out the logic at the moment
-$E502#boots_time_inc#Increments the boot timer if it's running
-$E525#end_sub#
-$C9EB#;#Load input into stack, wipe it
-$CA82#input_clear#
-$CACE#end_sub#
-$C255#clear_player_attributes#Seems to do a clean sweep here, be good to dig around
-$C553#copy_buffer#loop_16_times
+$CC71#gfx_bullet_draw?#
+$CC98#Store A to PPU_DATA#
+$CC9C#Set VRAM address#This should set the VRAM address we want to write to
+$CCA2#set PPUSCROLL to 0,0#
+$CCAC#everything but bit 0#
+$CCC7#Clear 0x0016 / wait VBLANK#Also clears PPU_MASK, probably because they want to draw to it outside of VBLANK?
+$CCD9#wait for VBLANK#
+$CD00#write A to PPU_CTRL#
+$CD06#bankswitch_sub_var#offset comes from bankswitch_current, keeps the value of X
+$CD13#bankswitch_sub_a#
+$CD45#some sub#
+$CD50#clear p1 input and others#
+$CD72#Set VRAM to 0x2000#
+$CD81#set VRAM to 0x2000#
+$CD8E#Clear PPU loop#
+$CD9E#Clear VRAM C0's#Seems to do 23C0 and 27C0
+$CDAC#clear some addresses#
+$CDC0#set_input_read#
+$CDC6#wait#Wait until 0x17 is zero?
+$CDD7#;#Clear some locations, update the anim_timer
+$CDEA#write FB with 4 byte padding?#
+$CE05#pause_check#
+$CE0B#end_sub#
+$CE0C#sfx_pause#
+$CFBB#bs_check#are we on bank 4?
+$CFD3#input_read_start?#
+$D000#input_read_complete#Reading the controller ports complete, now smooshing the data?
+$D00C#inputread#Get the input, not it and write it to another var
+$D3D6#if_A=3#
+$D3E2#bankswitch#Put bankswitch_target in X if bankswitch >= 4?
+$D3E5#bankswitch_loop#If we are not in bank 4, 0x32 - 0x32 > $C8 loop
+$D3FE#end_sub#
+$D3FF#clear_item_select_tile?#Clears the tile in the main screen that shows the currently selected item?
+$D419#wait_some_cycles#However long it takes to DEX + BNE 169 times
 $D43B#write_static_values#703=0x40, 702=0x20, 701=0x5F, 700=0x17,16=1
+$D478#clear_01c5_0041#
+$D642#bankswitch_to_3#
+$D667#;#Clear 0x8E, ROL it 4 times
+$D866#tile_loop_reset#
+$D86A#tile_loop_continue#
+$D86C#tile_set_offset#Loads the address from 0x27, which is 9AA0 + whatever is in the A reg
+$D87A#write_tile_data#Gets tile data and offset, writes it to the tile data buffer
+$D88C#inc_tile_data_count#Increment, load into A, check to see if we've hit 0x0D times
+$DAB2#level_scroller?#If level_scroll != 12 scroll level?
+$DADE#end_sub#
+$DB95#tile_loop_special_tile?#a8 and AA are both rock tiles
+$DBC9#;#
+$DBDA#no_key#
+$DDBE#check_for_b_button#
+$DDC5#b_pressed#Check to see if a subscreen item is selected or if we want to shoot a bullet
+$DDD8#fire_pressed#Check to see if 4way running, if so write the extra bullets to bullet_lifetim
+$DE0B#4way_not_active#Find a free spot in the bullet_time buffer, if none found, end
+$DE15#sfx_bullet#
+$DE1D#check_p1_direction#
+$DE2B#dir_west#A = p1_x - 4
+$DE34#dir_east#A = p1_x + 4
+$DE3B#dir_south_or_north#Transfer p1_dir in from Y to the A reg.
+$DE43#bullet_store#A9 = bullet_x, B2 = bullet_y, BB=bullet_dir,A0 = bullet_life
+$DE54#end_sub#
+$DE55#bullet_find_active#Searches the bullet buffer for an active bullet, stores it to X
+$DE64#bullet_found#
+$DE71#bullet_travel#Increment bullet travel,check to see if it's outside of our max range.  If so, clear the bullet
+$DE80#;#load in what direction the bullet is moving and it's last position?  If it goes off the edge of the screen, clear it
+$DEAA#bullet_clear#
+$DEC6#rocket_clear#
+$DFD8#bullet_x_old?#
+$DFDC#bullet_y_old?#
+$E05B#zero_c4-c9#
+$E065#sprite_buffer_check?#Looking for bit 7 in C4
+$E0A7#bomb_planted?ormaybeinpit?#
+$E0B8#debug_skip_check#Don't bother to check if we have any bombs in inventory if debug or demo mode is turned on
+$E0C1#bomb_check_inventory#Check to see if we have any bombs in the inventory
+$E0D0#end_sub#
+$E162#debug_check_skip_bomddec#
+$E16C#sfx_place_bomb#
+$E1CC#find_free_bomb_position#Stores it in X
+$E1D2#dec_x_reg#
+$E1D6#gogo_gadget_bankswitch?#
+$E212#bombtimer_sub#
+$E21E#Bomb pop?#02 = Explosion
+$E24F#find_empty_bombslot?#Searches 5 bytes from 0xC4 to find a free slot
+$E2A9#bomb_pickup#Play sound, check if we are in a demo, then increment if bombs < 100
+$E2BC#end_sub#
+$E2BF#end_sub#
+$E319#check_tile_buffer#It's a true or false response, but I'll be buggered if I can't work out the logic at the moment
+$E32E#carry_set#
+$E330#stage_isn't_dark#push_to_stack_increment_by_2
+$E33F#bankswitch_to_5#
+$E352#store_4_at_0x600+offsetXreg#
+$E361##Clear 0x8E, the ROLs set the zero flag
+$E372##increment 0x8E by 0xBC
+$E37A##Gets a bit tricky here.  It's using the 8D and 8E to hold where to pull the variable from
+$E3D3#gfx_inner_loop#Don't let it get above 0x20?
+$E3DD##Clear 0x8F
 $E44D#clock_active_inc#Start of all the increment code for the various items and effects
 $E45B#flash_screen_short_inc#
 $E495#screen_flash_timer_inc#
 $E4BF#candle_time_inc#
 $E4F4#4way_active_inc#
+$E502#boots_time_inc#Increments the boot timer if it's running
 $E512#lifevest_active_inc#
-$C8C4#drowning_check#Returns carry set if drowning
-$C977#drowning_check#
-$C9A9#not_drowning#
-$C951#carry_set#
-$C953#carry_clear#
-$C948#end_sub#
-$C949#checking for a level and e5#
-$C93A#forcefield_active_inc#
-$C954#end_sub#
-$C568#?_buffer1#
-$C551#buffer2_offset#set to 0x0C
+$E525#end_sub#
+$E526#item_get_reward#
+$E52A##is item_tile less than 0x0B?
+$E544#badluck_noitem#
+$E545#item_set_to_12?#
+$E54A#item_tile_???#item less than 0x11?  I don't see how this ever gets called
+$E554#item_tile_bee?#
+$E563#badluck_noitem#
+$E564#shotrange_increase#Limited to 9
+$E56E#end_sub#
+$E56F#item_forcefield_start#Think this might be unused?
+$E574#item_battery_picked_up#
+$E579#bombs_add_10#
+$E580#limit to 99#
+$E593#item_used_is_in_a#If item>  0x14, subtract 0x0F,  uses a table at E5A5-E5B? to jump to where the item_use_x routine is
+$E59C#set_address_to_jump_to#
+$E5A5#jmp_lobyte_item#
+$E5A6#jmp_hibyte_item#JMP offsets for each of the items.  eg E636 is rockets
+$E5B0#jmp_table_use_boots#E613
+$E5B2#jmp_table_use_clock#E609
+$E5B4#jmp_table_use_lightning#E5E1
+$E5B6#jmp_table_use_4way#E5D7
+$E5B8#jmp_table_item_candle#E5C5
+$E5BA#jmp_table_item_energy#E5BC
+$E5BC#jmp_table_item_rockets#E636
+$E5BE#;item_use_energy#LDA 0x0E; STA sfx_to_play;
+$E5C6#item_use_candle#
+$E5D7#end_sub#
+$E5D8#item_use_4way#
+$E5E2#item_use_lightning#
+$E60A#item_use_clock#
+$E614#item_use_boots#
+$E620#clear_darkness_and_candletime#
+$E62C#item_use_lifevest#
+$E637#item_use_rocket?#0x0A/bullet offset 8 is reserved for the rockets
+$E668#p1_dir_northsouth#
+$E690#item_use_megaton?#
+$E6F0#E714#
+$E6F3#;#if 0x01CF >= 2 End; If 0x01CD != 11 Continue
+$E713#end_sub#
+$E714#copy_loop_vars_to_zero_page#
+$E721#sub_start?#
+$E767#end_sub#
+$E7A2#subscreen_start?#
+$E815#subscr_select_lamp/latern#subscr_item_selection is +1 more than inventory base offset
+$E820#item_lamp/latern_use#Don't use item if stage already bright or if candle already in use
+$E83C#end_sub#
+$E84E#item_use?#
+$E994#subscr_itemcount_check#
+$E99C#subscr_item>0#
+$E99F#turn off level_darkness#
+$E9AF#subscr_item_check#Check to see if we have more than zero of an item
+$E9D3#subscr_item_more_than_zero#
+$EA00#get_tile2_data#(Tile2 data & 0x7F) - 1 = tile data
+$EA0D#tmp_tile_data_zero#
+$EA24#sfx_item_pickup_bee?#
+$EA2C#end_sub#
+$EA2D#key_check#Have we found the key yet?
+$EA78#check_for_magic_pool_tile#
+$EA86##
+$EA9D#clear_bomb_count#
+$EAA4#double_inventory_items#Loops through the inventory for 14 items starting from rockets, then doubles the bombs
+$EABC#double_item#Doubles the item, but limits it to 99
+$EACF#check_if_tile_empty#If not, push the tile type into the stack and X
+$EADB#wipe_tmp_tile_data#Blanks the item tile we just picked up, also checks to see if it was a stairs tile (0x1E = stairs)
+$EAF1#sfx_pickup_item#Pulls the item_tile number from the stack into A before getting the reward
+$EB04#end_sub#
+$EBA0#tile2_get_data#Get's the tile2 data from offset Y
+$EBA6#clear_tmp_tile_data#
+$ED90#item_get#First it checks for demo_running, then checks we have less than 100 of an item, then increments it.  X reg contains the offset
+$ED9C#end_sub#
+$EE47#underground_end#play transition sfx
+$EF27#lightning_check?#Seems that the carry is set if we can use lightning?
+$EFF8#check_level_darkness#
+$F072#end_sub#
+$F22A#energy_meter_decrement_check#energy timer only ticks every 6 passes
+$F23D#end_sub#
+$F23E#bomb_hit_player_sub?#
+$F25A#check_zero_health#
+$F25F#bomb_hit_player#Bomb or missile, Y reg = how much damage
+$F28C#zero_health#
+$F296#health_decrease_by_a#Decreases the health by LSRxA reg
+$F2A5#health_minor_empty#Triggered when health_minor hits zero
+$F2AA#health_use_a_major#Fills up minor with major.
+$F2B4#end_sub#
+$F2B7#item_use_energy_add#0x28 in A reg
+$F2E6#sfx_play_dead#
+$F2F8#clear_91#
+$F2FF#91_set_to_16#
+$F335#lda_5_jsr_d3d6#
+$F3AA#health_rol#
+$F40D#ppu_get_data?#
+$F41E#damage_table?#
+$F49E#increment_score?#
+$F583#gfx_score_copy#Copys the contents of the score to a gfx buffer?
+$F58E#p1_bombcount_check?#
+$F5BD#draw_number?#Seems to be responsible for fetching the tile for numbers
+$F5D4#bankswitch_to_6#
+$F645#copy_sprite_to_39-3C#
+$F6A3#0x089_dec#
 $F821#offset_set_to_4#
 $F823#copy_buffer#039 - 03C -> 0700 4 bytes, then the size put into 37
-$F6A3#0x089_dec#
-$F645#copy_sprite_to_39-3C#
-$C7CE#player_draw#Looks like we are copying the player location to update the OAM sprite
-$C77D#forcefield_check#
-$C8B9#water_check#Checks to see if we are stood on water (0x28 = water, 0x29 = waterfall)
-$C8D8#carry_set#
-$C8CB#stood_on_water#
-$C8DA#sprite_selections?#
-$C8B2#draw_shadow#
-$E065#sprite_buffer_check?#Looking for bit 7 in C4
-$C072#sprite_buffer_check_jmp#
-$CC14#carry_clear#
-$C73B#carry_set_0x1FB | 2#
-$C745#carry_clear#
-$C725#sfx_player_hit#
-$E1D2#dec_x_reg#
-$E1D6#gogo_gadget_bankswitch?#
-$E1CC#find_free_bomb_position#Stores it in X
-$DE55#bullet_find_active#Searches the bullet buffer for an active bullet, stores it to X
-$DE64#bullet_found#
-$DEB2#lda_b1#
-$DE71#;#Increment bullet travel,check to see if it's outside of our max range.  If so, clear the bullet
+$FFF0#unrom_bankswitch#

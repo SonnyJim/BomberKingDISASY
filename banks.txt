@@ -1,0 +1,13 @@
+Bank 2
+Level tile data
+
+Bank 5
+music and sfx
+
+Bank 6
+shop item cost
+demo_start ?
+intro?
+
+Bank 7
+main

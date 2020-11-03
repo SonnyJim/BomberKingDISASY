@@ -1,3 +1,5 @@
+item_use works using a jump table located at 0xE5A5 - 
+
 Inventory base is at 0x4D
 
 Offset:

@@ -1,0 +1,9 @@
+0x01		Skraug (Skull looking thing)
+0x02		Grunt (Robot thing)
+0x03		Mecha-bird
+0x04		Deltoid (Triangle wave path)
+0x05		Lurcher
+0x06		Blue Wane
+0x07		Red Wisp
+0x09		Missile
+0x11		Intro spaceship

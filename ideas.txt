@@ -9,3 +9,6 @@ Don't drain energy, smaller enemies take more, big enemies take less
 07:C940:29 03     AND #$03 Longer forcefield time
 07:C72F:A9 08     LDA #$08 Longer invulnerability after player damage
 07:E1B1:A9 10     LDA #$10 Change that to alter how far back we move after a bomb placement
+07:DE0B:A2 02     LDX #$02 Change this to allow for more bullets, will need to figure out if there's space though
+E567		Change that CMP to allow a higher max shot range.
+E582		Change that for bigger max bomb capacity

@@ -22,7 +22,7 @@ Board size is 13x16(?) tall,
 0x0F		Points 100000
 0x10		item_magicalbee //Randomly changes into candle/energy/rocket/boots/4-way
 0x11		item_shotpower
-0x12		item_unknown
+0x12		item_forcefield
 0x13		item_battery
 0x14		item_boots
 0x15		item_clock
