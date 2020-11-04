@@ -1,6 +1,7 @@
 Underground times out instead of having to find an exit
 More bombs (0xE580 is the routine for adding bombs via item pickup)
 Bombs take longer to explode
+Make bomb item placement more likely to happen
 Candles last forever
 Don't drain energy, smaller enemies take more, big enemies take less
 
@@ -12,3 +13,5 @@ Don't drain energy, smaller enemies take more, big enemies take less
 07:DE0B:A2 02     LDX #$02 Change this to allow for more bullets, will need to figure out if there's space though
 E567		Change that CMP to allow a higher max shot range.
 E582		Change that for bigger max bomb capacity
+F230		Change for slower energy drain
+90D5		Cost lookup table for shop items

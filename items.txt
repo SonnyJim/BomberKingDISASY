@@ -2,6 +2,8 @@ item_use works using a jump table located at 0xE5A5 -
 
 Inventory base is at 0x4D
 
+Item shop cost is a lookup table at 0x90D5.
+
 Offset:
 0x00	item_megaton
 0x01	item_lifevest

@@ -6,7 +6,8 @@ If the tile is in tile2 data and covered by a tile1 block, then it is stored nor
 
 tile data is kept at offsets 0x2FC and 0x03D9.  It's copied from ROM location $TIMALLEN
 
-Board size is 13x16(?) tall, 
+Board size is 13x16 grid, which has two different coord systems, grid tile and normal x/y.
+ 
 
 0x01		Lifevest
 0x02		Lantern

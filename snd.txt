@@ -10,6 +10,7 @@ music is at 0x00FA, write the following to make music:
 0x07	Credits
 0x08	Shop march
 0x09	Another Boss
+0x0C	?
 0x0F	Demo music
 
 effects is at 0x00FB, write the following to make a noise
@@ -45,4 +46,4 @@ effects is at 0x00FB, write the following to make a noise
 0x23	Intro blastoff!
 0x24	Intro twinkling
 0x25	Intro warp down
-
+0x26	Intro 'shimmer' effect?

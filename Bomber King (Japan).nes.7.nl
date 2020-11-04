@@ -19,11 +19,15 @@ $C20F#level_check_for_end#
 $C23A#demo_something?#
 $C255#clear_player_attributes#Seems to do a clean sweep here, be good to dig around
 $C30D#skip_player_init#
+$C383#level_number=0#
 $C390#debug_another_check#
+$C3A4##Check to see if we've touched the exit tile
+$C3AB#end_level#
 $C3D7#button_a_pressed?#
 $C41B#jsr_inputread#
 $C41E#input_check_death#Checks to see if we are holding Select and Start on the game over screen
 $C42A#clr_00fa#
+$C438#end_level?#
 $C457#level_increment#
 $C461#underground_is_set?#
 $C46B#underground_clear#
@@ -31,7 +35,7 @@ $C546#?_buffer_copy#
 $C551#buffer2_offset#set to 0x0C
 $C553#copy_buffer#loop_16_times
 $C567#end_sub#
-$C568#?_buffer1#
+$C568#?_table#
 $C5A3#clear_darkness#
 $C601#underground_start?#
 $C689#init_level_check#if 01F4 != 0, clear carry, if level == 1, carry set.  Maybe something to do with the bonus rooms?
@@ -39,7 +43,8 @@ $C696#carry_clear#
 $C698#carry_set#
 $C69A#init_health#
 $C6BF#sfx_stop#
-$C6D0#debug_mode_check#
+$C6D0#debug_mode_check#Check whether the player has completed the convoluted steps to enable debug mode
+$C701#end_sub#
 $C725#sfx_player_hit#
 $C73B#carry_set_0x1FB | 2#
 $C745#carry_clear#
@@ -56,7 +61,7 @@ $C8D8#carry_set#
 $C8DA#sprite_selections?#
 $C93A#forcefield_active_inc#
 $C948#end_sub#
-$C949#level!=0and e5#
+$C949#is_level=0 and enemy6 !=0#Is this checking for ship to disappear off the intro level?
 $C951#carry_set#
 $C953#carry_clear#
 $C954#end_sub#
@@ -67,6 +72,7 @@ $C9EB#;#Load input into stack, wipe it
 $CA49#set_player_direction#Loads up the player input and mings it through a couple of LSRs to find which d-pad button is pressed
 $CA82#input_clear#
 $CACE#end_sub#
+$CB4D#end_sub#
 $CB6D#screen_scroll_check#check if we are past the middle of the screen
 $CB7E#skip_increment#
 $CBA2#move_left#
@@ -87,7 +93,7 @@ $CCAC#everything but bit 0#
 $CCC7#Clear 0x0016 / wait VBLANK#Also clears PPU_MASK, probably because they want to draw to it outside of VBLANK?
 $CCD9#wait for VBLANK#
 $CD00#write A to PPU_CTRL#
-$CD06#bankswitch_sub_var#offset comes from bankswitch_current, keeps the value of X
+$CD06#bankswitch_sub_var#switch to bankswitch_current, keep the value of X
 $CD13#bankswitch_sub_a#
 $CD45#some sub#
 $CD50#clear p1 input and others#
@@ -103,6 +109,8 @@ $CDEA#write FB with 4 byte padding?#
 $CE05#pause_check#
 $CE0B#end_sub#
 $CE0C#sfx_pause#
+$CE3F#lsr_ror_dex_table#Looks something up in a table?
+$CE82#some_table?#
 $CFBB#bs_check#are we on bank 4?
 $CFD3#input_read_start?#
 $D000#input_read_complete#Reading the controller ports complete, now smooshing the data?
@@ -115,19 +123,29 @@ $D3FF#clear_item_select_tile?#Clears the tile in the main screen that shows the 
 $D419#wait_some_cycles#However long it takes to DEX + BNE 169 times
 $D43B#write_static_values#703=0x40, 702=0x20, 701=0x5F, 700=0x17,16=1
 $D478#clear_01c5_0041#
-$D642#bankswitch_to_3#
+$D619##LDA $bankswitch_target
+$D61A#bankswitch_to_target#
+$D626#copy_loop#Copy 16 bytes from table location to 0x020A
+$D642#bankswitch_to_3_copy_16bytes_then_bankswitch_target#
+$D645##bankswitch to 3
+$D64E#copy_loop#Copy 16 bytes from ROM table to 0x01FA
+$D661##bankswitch to target
 $D667#;#Clear 0x8E, ROL it 4 times
+$D6BB#chalice_checks#Called after a full sweep of the grid is completed
 $D866#tile_loop_reset#
 $D86A#tile_loop_continue#
 $D86C#tile_set_offset#Loads the address from 0x27, which is 9AA0 + whatever is in the A reg
 $D87A#write_tile_data#Gets tile data and offset, writes it to the tile data buffer
-$D88C#inc_tile_data_count#Increment, load into A, check to see if we've hit 0x0D times
+$D88C#inc_sprite_grid_count#The playing field is 0x10 by 0x0D
 $DAB2#level_scroller?#If level_scroll != 12 scroll level?
 $DADE#end_sub#
 $DB95#tile_loop_special_tile?#a8 and AA are both rock tiles
 $DBC9#;#
 $DBDA#no_key#
-$DDBE#check_for_b_button#
+$DDA2#intro_level_check?#
+$DDBB#branch if anim_timer bit0 = 1#
+$DDBE#check_for_b_button#demo not running
+$DDC4#end_sub#
 $DDC5#b_pressed#Check to see if a subscreen item is selected or if we want to shoot a bullet
 $DDD8#fire_pressed#Check to see if 4way running, if so write the extra bullets to bullet_lifetim
 $DE0B#4way_not_active#Find a free spot in the bullet_time buffer, if none found, end
@@ -148,10 +166,12 @@ $DFD8#bullet_x_old?#
 $DFDC#bullet_y_old?#
 $E05B#zero_c4-c9#
 $E065#sprite_buffer_check?#Looking for bit 7 in C4
-$E0A7#bomb_planted?ormaybeinpit?#
+$E0A7#can_we_plant_a_bomb?#
 $E0B8#debug_skip_check#Don't bother to check if we have any bombs in inventory if debug or demo mode is turned on
 $E0C1#bomb_check_inventory#Check to see if we have any bombs in the inventory
+$E0C5#bomb_count_skipped#
 $E0D0#end_sub#
+$E0D1#we_can_plant_a_bomb#
 $E162#debug_check_skip_bomddec#
 $E16C#sfx_place_bomb#
 $E1CC#find_free_bomb_position#Stores it in X
@@ -255,9 +275,10 @@ $EE47#underground_end#play transition sfx
 $EF27#lightning_check?#Seems that the carry is set if we can use lightning?
 $EFF8#check_level_darkness#
 $F072#end_sub#
+$F225#intro_check?#
 $F22A#energy_meter_decrement_check#energy timer only ticks every 6 passes
 $F23D#end_sub#
-$F23E#bomb_hit_player_sub?#
+$F23E#energy_meter_dec?#
 $F25A#check_zero_health#
 $F25F#bomb_hit_player#Bomb or missile, Y reg = how much damage
 $F28C#zero_health#

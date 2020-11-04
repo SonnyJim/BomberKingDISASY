@@ -8,6 +8,7 @@ Bank 6
 shop item cost
 demo_start ?
 intro?
+enemy movement?
 
 Bank 7
 main

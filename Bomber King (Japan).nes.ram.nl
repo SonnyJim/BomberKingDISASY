@@ -6,8 +6,14 @@ $0011#input_bitwiseNot#
 $0014#bankswitch_target#
 $0017#flag_inputread?#
 $0019#anim_timer#
+$001A#status_of_something?#Set to 4 when inc_sprite_grid has completed a full set of 13x16
+$001D#vram1_addr_lobyte#
+$001E#vram1_addr_hibyte#
+$0021#vram2_addr_hibyte#
+$0022#vram2_addr_lobyte#
 $0025#level_scroll#How far we've scrolled
 $0027#9AA0 (level data)#Holds the offset where the level data is held
+$002B#grid_column_complete?#Incremented each time sprite_grid_y completes a loop
 $0030#tmp_offset#
 $0031#bankswitch_wait_timer?#
 $0032##
@@ -16,6 +22,9 @@ $0037#offset_size#
 $0039#bullet_y_something?#
 $003A#enemy_type_requested#Holds a temp enemy type to be put into a free spot in the enemy buffer (E0)
 $003C#p1_x_old?#
+$003D#lobyte_backup?#
+$003E#hibyte_backup#
+$0044#enemy_direction?#used when initilising a new enemy?
 $0045#score_millions#
 $0046#score_hundredthousand#
 $0047#score_tenthousands#
@@ -57,19 +66,21 @@ $007E#flag_death?#Something to do with the zeroflag?
 $007F#sprite_x#
 $0081#sprite_y#
 $0083#sprite_select?#
+$0085#enemy_type_table_lookup_lobyte#lob
+$0086#enemy_type_table_lookup_hibyte#
 $008A#tmp_offset#Used for the tile offset from tilebase
-$008C#tmp_var_empty_slot#
+$008C#enemy_slot_current#Which enemy slot we are currently looking at
 $008D#gfx_location_lobyte?#health_major ROL'd 4 times/Used as a loop count?
 $008E#gfx_location_hibyte?#Used during E361 to set the location to read from
 $0091#PPU_HI_ADDR#
 $0092#PPU_LO_ADDR#
 $0093#tmp_dir_var#
 $0094#bullet_offset?#
-$0098#defense_level#Not actually sure what this does
+$0098#sino_offset#Used to provide the sine movement pattern for the enemies
 $0099#subscr_item_selection#
-$009A#random_var?#This ones a bit weird.  Set to zero at the start of each frame, but it's used to subtract from enemy X
+$009A#screen_scrolled#Zero'd at the start of each frame, this sets how far to move the enemies when the screen is scrolled
 $009B#flag_demo#Flag for whether the demo is running
-$009C#enemy_movemnet?#
+$009C#enemy_offset_var?#
 $00A0#bullet_lifetime_base#How long the bullet has been alive, A8 is used for rockets
 $00A2#bullet2_life#
 $00A9#bullet_base_x#Bullet is travelling +/- x
@@ -84,6 +95,11 @@ $00CD#gfx_buffer_select#Writing non-zero causes the tiles to be sent to the seco
 $00CF#NMI_vector_base#
 $00D0#level_position#
 $00E0#enemy_type#
+$00E1#enemy2_type#
+$00E2#enemy3_type#
+$00E3#enemy4_type#
+$00E4#enemy5_type#
+$00E5#enemy6_type#
 $00FA#music_to_play#
 $00FB#sfx_to_play#
 $0140#stack#
@@ -116,7 +132,7 @@ $01EE#gfx_score_buffer?#
 $01F3#main_menu_option#0 for start, 1 for continue
 $01F4#tmp_level_num?#
 $01F5#drowning#
-$01FA#?_buffer2#
+$01FA#?_buffer2#Gets 10 bytes copied into it from 9DE0
 $021A#gfx_buffer2#
 $02F8#flag_themesong#
 $02FC#tile_data_buffer#
@@ -135,7 +151,39 @@ $04BC#enemy2_y#
 $04BD#enemy3_y?#
 $04BE#enemy4_y#
 $04BF#enemy5_y#
-$04C5#enemy_base#
+$04C0#enemy5_y#Also used for the ship in the intro stage
+$04C5#enemy_timer?#Some kind of timer for the enemy
+$04CF#enemy1_dir#
+$04D0#enemy2_dir#
+$04D1#enemy3_dir#
+$04D2#enemy4_dir#
+$04D3#enemy5_dir#
+$04D4#enemy6_dir#
+$04D9#enemy1_?#
+$04DA#enemy2_?#
+$04DB#enemy3_?#
+$04DC#enemy4_?#
+$04DD#enemy5_?#
+$04E3#enemy_sino1#Seems to be the sinusodial wave stuff
+$04E4#enemy_sino2#
+$04E5#enemy_sino3#
+$04E6#enemy_sino4#
+$04E8#enemy6_sino6#
+$0501#enemy1_hits#How much damage we've applied to the enemy so far
+$0502#enemy2_hits#
+$0503#enemy3_hits#
+$0504#enemy4_hits#
+$0505#enemy5_hits#
+$0506#enemy?_hits#
+$050B#enemy1_x?#
+$050C#enemy2_x?#
+$050D#enemy3_x?#
+$050E#enemy4_x?#
+$050F#enemy1_y?#
+$0510#enemy2_y?#
+$0511#enemy3_y?#
+$0512#enemy4_y?#
+$0513#enemy5_y?#
 $0524#shop_item_offset#
 $0528#enemy_last_killed#
 $0529#magic_pool_activated#Set to 1 when you walk into a magic pool.  Seems that there's code for 3, which clears all your bombs

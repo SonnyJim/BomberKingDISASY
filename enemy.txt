@@ -7,3 +7,5 @@
 0x07		Red Wisp
 0x09		Missile
 0x11		Intro spaceship
+0x0C		Bird
+

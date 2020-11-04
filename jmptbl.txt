@@ -1,0 +1,31 @@
+96B9 - 96BA Game state jump table?  I think this looks at the enemy type and then applies a movement pattern to it
+
+X		Jumps to	Effect
+0		60e4		Probably not meant to do that.
+2		0x98AA		very similar code to 96DD
+4		0x9B54/0x993C	more enemy movement
+6		0x9B54		enemy movement?
+8		0x9BAB		movement
+10		0x99F3		
+22		0x96DD		Seems to be related to the intro?			
+
+99C5 is a sinusodial lookup table for Y?
+9BA2 is another sinusodial table, perhaps for X?
+
+A19F is a movement table? 4 places, 10 FF 00 00?  Directions? 
+
+Chalice/level looping
+FE9E is a table of chalice/screen loop values.  D5 is always cleared, D2 and D3 are loaded from the table.
+FEDC is a table for D4, D5, D6.  D1 seems to be always started at 3
+FEE0 is a table for level position?
+
+0x8000 is antother table, NFI what it does though.  Something to do with level data?
+
+FC22 is another one, based around level data + 6 x4?  Uses gfx lobyte/highbyte for something
+
+FCAA results go into 0x8F
+
+FDCC 		PPU RAM lookup table.  List of RAM addresses on the PPU.
+
+85AC		SFX lookup table, result goes into 0x152
+85D4		SFX jmp table.  Contains the locations of the APU routines to make the various sound effects.
