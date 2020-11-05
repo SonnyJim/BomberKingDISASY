@@ -2,6 +2,7 @@ $C009#vblank_wait#
 $C027#subscreen?#
 $C060#shop_medal_draw?#
 $C072#sprite_buffer_check_jmp#
+$C075#spirte_load#
 $C0D0#BOOT#
 $C0E3#Wait for VBLANK#
 $C0E8#Wait for 2nd VBLANK#
@@ -15,7 +16,7 @@ $C1D5#init_startgame_playervars#
 $C1ED#clear_player_items#
 $C1F9#exit_sub#
 $C1FF#level_init_playervars#
-$C20F#level_check_for_end#
+$C20F#end_level#
 $C23A#demo_something?#
 $C255#clear_player_attributes#Seems to do a clean sweep here, be good to dig around
 $C30D#skip_player_init#
@@ -31,6 +32,7 @@ $C438#end_level?#
 $C457#level_increment#
 $C461#underground_is_set?#
 $C46B#underground_clear#
+$C4A7#stack_pull_vars#pulls a bunch of vars from the stack
 $C546#?_buffer_copy#
 $C551#buffer2_offset#set to 0x0C
 $C553#copy_buffer#loop_16_times
@@ -51,12 +53,23 @@ $C745#carry_clear#
 $C747#sprite_collsion?#Checks to see if the player is colliding with a sprite\n.  Sets the carry flag to indicate condition
 $C76F#end_sub_clear_carry#
 $C77D#forcefield_check#
+$C7A7#end_sub#
 $C7AC#draw_player?#
 $C7CE#player_draw#Looks like we are copying the player location to update the OAM sprite
+$C7E3##If the player is dead, set the player sprite accordingly
+$C817#not_dead#
+$C83B#negative_set#
+$C844#overflow_set#
+$C848#overflow_clear#
+$C84B##check bits 3 and 4
+$C854##carry now contains whether we are on water.
+$C87C#not_on_water#
+$C882#get_player_sprite_from_table#
 $C8B2#draw_shadow#
 $C8B9#water_check#Checks to see if we are stood on water (0x28 = water, 0x29 = waterfall)
-$C8C4#drowning_check#Returns carry set if drowning
+$C8C4#drowning_clear#We've checked the tile we are stood on and we aren't drowning
 $C8CB#stood_on_water#
+$C8D0##if we've got a lifevest on, don't increment the drowning even if we are on water
 $C8D8#carry_set#
 $C8DA#sprite_selections?#
 $C93A#forcefield_active_inc#
@@ -89,11 +102,12 @@ $CC71#gfx_bullet_draw?#
 $CC98#Store A to PPU_DATA#
 $CC9C#Set VRAM address#This should set the VRAM address we want to write to
 $CCA2#set PPUSCROLL to 0,0#
-$CCAC#everything but bit 0#
-$CCC7#Clear 0x0016 / wait VBLANK#Also clears PPU_MASK, probably because they want to draw to it outside of VBLANK?
-$CCD9#wait for VBLANK#
+$CCAC##clear bit0, set base nametable address to $2000
+$CCBC#ppu_oam_dma_load#Loads in the data from the 0x0700 OAM buffer
+$CCC7#oam_buffer_flag_clear#Also clears PPU_MASK, probably because they want to draw to it outside of VBLANK?
+$CCD9#wait for VBLANK#bit7 indicates when a VBLANK is active.  It's also sets negative, so this just whips around waiting for it not to be 1
 $CD00#write A to PPU_CTRL#
-$CD06#bankswitch_sub_var#switch to bankswitch_current, keep the value of X
+$CD06#bankswitch_sub_var#switch to bankswitch_target, keep the value of X
 $CD13#bankswitch_sub_a#
 $CD45#some sub#
 $CD50#clear p1 input and others#
@@ -101,27 +115,52 @@ $CD72#Set VRAM to 0x2000#
 $CD81#set VRAM to 0x2000#
 $CD8E#Clear PPU loop#
 $CD9E#Clear VRAM C0's#Seems to do 23C0 and 27C0
-$CDAC#clear some addresses#
+$CDAC#oam_600_clear#
 $CDC0#set_input_read#
 $CDC6#wait#Wait until 0x17 is zero?
 $CDD7#;#Clear some locations, update the anim_timer
-$CDEA#write FB with 4 byte padding?#
+$CDE9#end_sub#
+$CDEA#oam_buffer_fb_slot?#write FB every 4 bytes, to the 'slot' section of the oam buffer
 $CE05#pause_check#
 $CE0B#end_sub#
 $CE0C#sfx_pause#
 $CE3F#lsr_ror_dex_table#Looks something up in a table?
 $CE82#some_table?#
-$CFBB#bs_check#are we on bank 4?
-$CFD3#input_read_start?#
+$CFAE##turn off bit 0
+$CFBB#bankswitch_check_for_4#If bs_target is 4, set 0x35 to 4, otherwise it's 2
+$CFC5#do_frame#
+$CFD3#do_line#
+$CFDA#store_ppu_mask_and_read_inputs#
+$CFDF#input_write_joypad_latch#
+$CFE6##
+$CFEB##
 $D000#input_read_complete#Reading the controller ports complete, now smooshing the data?
 $D00C#inputread#Get the input, not it and write it to another var
+$D031#reload_from_stack_and_jmp#Reload CPU from stack
+$D037#go_to_???_jmp_table#Does this without restoring the stack
+$D040#sfx_jmp_table_end?#
+$D1AD#from_sfx_jmp_table#
+$D1B2##set VRAM address increment per CPU read/write of PPUDATA to 1?
+$D1B6##set PPU to 0x3F00
+$D1C0##clear PPU scroll position
+$D1CD##set base nametable address to 0x2400
+$D1D4#load_from_buffer#
+$D2B4##set PPU_ADDR to 0x3F00, clear the scroll
+$D2CE##set base nametable address to 0x2400
+$D36B##Clears bit2, which sets VRAM increments to add 1
+$D37B##loads the size
+$D37F#ppu_store_data#
+$D395##Set base nametable address to either $2000 or $2800
+$D39E##turn off bit3, set VRAM address increment to 1
+$D3A6##load VRAM address from buffer
 $D3D6#if_A=3#
 $D3E2#bankswitch#Put bankswitch_target in X if bankswitch >= 4?
 $D3E5#bankswitch_loop#If we are not in bank 4, 0x32 - 0x32 > $C8 loop
+$D3F4#switching_to_bank4#Does this mean we get to eat some graphics data?
 $D3FE#end_sub#
 $D3FF#clear_item_select_tile?#Clears the tile in the main screen that shows the currently selected item?
 $D419#wait_some_cycles#However long it takes to DEX + BNE 169 times
-$D43B#write_static_values#703=0x40, 702=0x20, 701=0x5F, 700=0x17,16=1
+$D43B#oam_buffer_write_static#703/x_delta=0x40, 702/bitmask=0x20, 701/type=0x5F, 700/slot?y?=0x17, set oam_buffer_flag
 $D478#clear_01c5_0041#
 $D619##LDA $bankswitch_target
 $D61A#bankswitch_to_target#
@@ -131,17 +170,29 @@ $D645##bankswitch to 3
 $D64E#copy_loop#Copy 16 bytes from ROM table to 0x01FA
 $D661##bankswitch to target
 $D667#;#Clear 0x8E, ROL it 4 times
+$D67F#set_chalice_and_level_length#Uses A shifted left once as the table offsets
+$D681##
+$D6A9##set high bit?
+$D6B3#D6!=D1+1#
 $D6BB#chalice_checks#Called after a full sweep of the grid is completed
-$D866#tile_loop_reset#
+$D6E0#chalice_check?#
+$D6F7##bankswitch to 2
+$D7AA#l1#
+$D7AE#grid_stuffs?#
+$D84D#clear_level_vars?#
+$D866#grid_loop_clear_y#
 $D86A#tile_loop_continue#
-$D86C#tile_set_offset#Loads the address from 0x27, which is 9AA0 + whatever is in the A reg
+$D86C#load_level_tile#
 $D87A#write_tile_data#Gets tile data and offset, writes it to the tile data buffer
 $D88C#inc_sprite_grid_count#The playing field is 0x10 by 0x0D
 $DAB2#level_scroller?#If level_scroll != 12 scroll level?
+$DAD6##read jump table
 $DADE#end_sub#
 $DB95#tile_loop_special_tile?#a8 and AA are both rock tiles
 $DBC9#;#
 $DBDA#no_key#
+$DBDC#grid_y_cmp?#
+$DBF2#end_sub#
 $DDA2#intro_level_check?#
 $DDBB#branch if anim_timer bit0 = 1#
 $DDBE#check_for_b_button#demo not running
@@ -205,7 +256,7 @@ $E526#item_get_reward#
 $E52A##is item_tile less than 0x0B?
 $E544#badluck_noitem#
 $E545#item_set_to_12?#
-$E54A#item_tile_???#item less than 0x11?  I don't see how this ever gets called
+$E54A#score_get#Subtracts 11, because that's the offset from the tile_item.
 $E554#item_tile_bee?#
 $E563#badluck_noitem#
 $E564#shotrange_increase#Limited to 9
@@ -214,6 +265,7 @@ $E56F#item_forcefield_start#Think this might be unused?
 $E574#item_battery_picked_up#
 $E579#bombs_add_10#
 $E580#limit to 99#
+$E58D#score_table#6 bytes long.  Not sure how it works
 $E593#item_used_is_in_a#If item>  0x14, subtract 0x0F,  uses a table at E5A5-E5B? to jump to where the item_use_x routine is
 $E59C#set_address_to_jump_to#
 $E5A5#jmp_lobyte_item#
@@ -295,12 +347,74 @@ $F3AA#health_rol#
 $F40D#ppu_get_data?#
 $F41E#damage_table?#
 $F49E#increment_score?#
+$F4AE##Check if we go over 10, if so increment the next score.
+$F4FD#hundreds_not_empty#
 $F583#gfx_score_copy#Copys the contents of the score to a gfx buffer?
 $F58E#p1_bombcount_check?#
 $F5BD#draw_number?#Seems to be responsible for fetching the tile for numbers
-$F5D4#bankswitch_to_6#
-$F645#copy_sprite_to_39-3C#
+$F5D4#oam_load_to_buffer_8x16#Changes banks to 6, grabs some vars from a table, push results into the stack
+$F5E1##The lowest bit of sprite_select is now the carry flag.  This sets either tilebank 0 or tilebank 1
+$F5E3##Carry flag indicates which tilebank, 8042 = tilebank0, 8142 tilebank1
+$F5ED#lookup_table at 8042#Y = sprite_select
+$F5F6##fetch previous byte from table, which gives us another offset for Y
+$F5F9##read the lowest bit to set which bank we read from (8142 or 8042)
+$F605##fetch the next table address, first we get the lo byte
+$F607##put it into the stack for later
+$F608##read the next byte
+$F60D##pull the low byte from the stack
+$F612##read 3 bytes from the new table and store them in 89,87,88
+$F622##pull the first result out the stack again
+$F626##
+$F630#result_was_2#
+$F633#result_was_4_or_more#set lookup table to 8D1C
+$F645#put_sprite_table_var_into_x#Gets some data from the sprite table
+$F649##check_bit7, if set turn on bit 8
+$F64E##check bit 8
+$F65B##Only copy bit7 if it's set, which is flip vertically
+$F65F##read the next byte from the table
+$F663##check 7th bit
+$F68E##read the last byte from the table
+$F695##Check bits 0 and 1,  Pallette
+$F697##OR it with the result we got earlier
+$F69B##Copy some stuff to the 0700 buffer
 $F6A3#0x089_dec#
-$F821#offset_set_to_4#
-$F823#copy_buffer#039 - 03C -> 0700 4 bytes, then the size put into 37
+$F6AF#sprite_attr_load_from_table#Pulls the OAM bytes from the sprite attributes table
+$F6B3##flip horizontally
+$F6B8##flip vertically
+$F6BD##palette and priority
+$F6C2##flip the bits, as we want to move where the sprite is redrawn
+$F6CC##pull our original byte from it's storage
+$F6CF##store the vertical flipping flag
+$F6D1##grab the sprite_x but apply some transformations if it's flipped.
+$F6D3##
+$F6D4##store the byte for later use
+$F6DA##turn on bit7 and flip the bits?
+$F6E1##oam_byte3 = oam_byte3 - sprite_x
+$F6EA##If the sprite ends up off the screen, don't bother doing anything else.  We wouldn't be able to draw it anyway
+$F6EE#bit6_not_set#So no horizontal flip
+$F6F8#store_oam_byte2#Restore the original value.  Flip it the other way instead?
+$F700##bit6, tileindex
+$F707##Palette and priority flags
+$F70B##flip bit7
+$F716#next_table_addr#
+$F717#oam_loop_of_somekind#
+$F81B#oam_load_attr_to_buffer#Store the bytes we pulled out of the table into the OAM buffer.  Does some chicanery on Y because you can't draw on line 0?  Something like that...
+$F821##set offset to 4.  Don't want to mess around with Sprite 0 because it lives 0700-0703
+$F823#copy_sprite_attr_to_0700_buffer#Y|tileindex|attributes|X
+$F840#init_underground?#
+$FB84#level_number + 6 is in A#
+$FBC7#pull_x_from_stack#
+$FBCA#push_y_to_stack#
+$FBFC#write_16_bytes_to_ppu#Fetchs the address from a lookup table, then writes data from the address into the PPU.  Format seems to be 1 byte length, followed by the ram address
+$FC08##
+$FC0A##clear Y as we reuse it on the inner loop
+$FC0C#outer_loop#data_size loops
+$FC0E#inner_loop#runs for 256 bytes?
+$FC14##
+$FC18#dec_x#Runs 16 times
+$FC22#level_gfx_table?#
+$FDCC#lookup_table3?#
+$FE9E#chalice_table#
+$FEDC#chalice_table_d4-6#
+$FEDD#chalice_table2?#
 $FFF0#unrom_bankswitch#

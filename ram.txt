@@ -12,3 +12,5 @@
 0x0078 Player direction
 0x0098 Level number
 0xE588 
+
+0700-07FFish	Sprite data?

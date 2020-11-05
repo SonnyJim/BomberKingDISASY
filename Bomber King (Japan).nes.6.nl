@@ -22,7 +22,7 @@ $90D6#shop_itemcost_lifevest#0x1E = 30 Medals
 $90D7#shop_itemcost_lantern#0x14 = 20 Medals
 $90D8#shop_itemcost_clock#0x0A = 10 Medals
 $90D9#item_shopcost???#
-$90DD##LDX $8C
+$90DD##LDX $enemy_slot_current
 $90DE#finished_searching_for_free_enemy_slot#
 $90E8##Clear 1FB, set the RTS into the stack and load from jmp table
 $90FC#enemy_slot_empty#
@@ -37,6 +37,7 @@ $9303#enemy_damage_table#How much damage we cause to an enemy?
 $9315#enemy_damage_another_table#Max health for enemy?
 $9338#read_sprite_selection_buffer#
 $9356#sprite_selection_buffer?#
+$9533#sprite_load_xy#
 $9676#clock_check#
 $967C#if_clock_active_rts#
 $967F#clear_timers?#e0-e9, d7-da, bullets
@@ -123,11 +124,15 @@ $A530#end_sub#
 $A531#found_nonzero_in_D7-D5#
 $A58B#zero two vars#
 $A5A1#sfx_play_intro_ship#
+$A68D#check_gfx_offset?#
+$A694#run_sub#
 $A6F8#JSR_C015#
 $A707#demo_timer_check#Waits for 512 frames before the demo starts
 $A70D#check_for_select#
 $A736#check_for_start#
 $A745#demo_start#
+$A7A3#init_player_sprite#
+$A7B3#indirect_bankswitch_to_3#
 $A825#demo_timer_update?#Seems to use anim_timer and bullet_offset for the demo screen timeout
 $A83C##
 $A859#end_sub#

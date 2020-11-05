@@ -1,3 +1,9 @@
+0x0031 - 0x3003C is a 4 byte OAM sprite attributes buffer (Y/Index/attr/X)  
+0x0600 - somezie	This is probably for 8x8 sprites
+0x0700 - somezie	This is probably for 8x16 sprites
+
+
+
 96B9 - 96BA Game state jump table?  I think this looks at the enemy type and then applies a movement pattern to it
 
 X		Jumps to	Effect
@@ -9,10 +15,7 @@ X		Jumps to	Effect
 10		0x99F3		
 22		0x96DD		Seems to be related to the intro?			
 
-99C5 is a sinusodial lookup table for Y?
-9BA2 is another sinusodial table, perhaps for X?
 
-A19F is a movement table? 4 places, 10 FF 00 00?  Directions? 
 
 Chalice/level looping
 FE9E is a table of chalice/screen loop values.  D5 is always cleared, D2 and D3 are loaded from the table.
@@ -27,5 +30,23 @@ FCAA results go into 0x8F
 
 FDCC 		PPU RAM lookup table.  List of RAM addresses on the PPU.
 
+8042		2 Sprite lookup tables, populates 87,88,89.  Uses 8042 or 8142 based on the state of the lowest sprite_select but
+8142		
+8200		another table?  Sprites I think
 85AC		SFX lookup table, result goes into 0x152
 85D4		SFX jmp table.  Contains the locations of the APU routines to make the various sound effects.
+87BB		SFX table?
+8D1c		Sprite lookup table?
+8D22		Sprite lookup?
+8D34		table, nnot sure.  Sprites?
+8d37		
+
+9100		Another jump table to be explored
+99C5 is a sinusodial lookup table for Y?
+9BA2 is another sinusodial table, perhaps for X?
+A19F is a movement table? 4 places, 10 FF 00 00?  Directions? 
+C8DA		player sprite table?  Something to do with water maybe?		
+D040		SFX jmp table.
+DAEO	Jump table
+
+FA26		lookup table.  Get's compared to 0x04AE
