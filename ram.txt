@@ -13,4 +13,5 @@
 0x0098 Level number
 0xE588 
 
-0700-07FFish	Sprite data?
+0600		???
+0700-07FFish	OAM sprite attributes buffer.  Gets shuffled around a lot to give all sprites a fair chance.

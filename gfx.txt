@@ -1,0 +1,5 @@
+OAM
+
+Two OAM attribute tables, one at 0x0600 and one at 0x0700.  
+
+First, attributes of the sprites to be drawn are loaded into 0x0700.  These are then 'shuffled' (barring the player sprite) into 0x0600, to help with any problems if we start hitting the sprite limit of the hardware (aka sprite flickering).

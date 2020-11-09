@@ -1,4 +1,5 @@
 $C009#vblank_wait#
+$C00F#jmp_levelnum?#
 $C027#subscreen?#
 $C060#shop_medal_draw?#
 $C072#sprite_buffer_check_jmp#
@@ -6,7 +7,7 @@ $C075#spirte_load#
 $C0D0#BOOT#
 $C0E3#Wait for VBLANK#
 $C0E8#Wait for 2nd VBLANK#
-$C0ED#init_ram_clear#Fucking weird way of doing it, though
+$C0ED#init_ram_clear#Fucking weird way of doing it, though.  Probably to avoid hitting a bankswitch or something
 $C13A#clear_defense_and_levelnum#
 $C16B#clear_subscrsel_and_shotrange#
 $C178#demoflag_set#
@@ -16,9 +17,12 @@ $C1D5#init_startgame_playervars#
 $C1ED#clear_player_items#
 $C1F9#exit_sub#
 $C1FF#level_init_playervars#
-$C20F#end_level#
+$C20F#level_check#
 $C23A#demo_something?#
+$C245##Set base nametable address to 0x2000
 $C255#clear_player_attributes#Seems to do a clean sweep here, be good to dig around
+$C283##make sure that the player is initialised onto a clear tile
+$C29B#level_is_normal#
 $C30D#skip_player_init#
 $C383#level_number=0#
 $C390#debug_another_check#
@@ -33,12 +37,19 @@ $C457#level_increment#
 $C461#underground_is_set?#
 $C46B#underground_clear#
 $C4A7#stack_pull_vars#pulls a bunch of vars from the stack
+$C4B7##change base nametable address to $2000
+$C4DB##we dieded
 $C546#?_buffer_copy#
 $C551#buffer2_offset#set to 0x0C
 $C553#copy_buffer#loop_16_times
 $C567#end_sub#
 $C568#?_table#
+$C595#level_check_dark#Checks to see if the level starts off dark
 $C5A3#clear_darkness#
+$C5A8#level_is_dark#
+$C5AD#tbl_level_dark#
+$C5B1#level_check_boss_level#Looks like we are searching through C5C3 to find something.  Sets the carry flag
+$C5C3#tbl_boss_levels?#Maybe this is a table that holds which levels are boss levels?
 $C601#underground_start?#
 $C689#init_level_check#if 01F4 != 0, clear carry, if level == 1, carry set.  Maybe something to do with the bonus rooms?
 $C696#carry_clear#
@@ -53,6 +64,7 @@ $C745#carry_clear#
 $C747#sprite_collsion?#Checks to see if the player is colliding with a sprite\n.  Sets the carry flag to indicate condition
 $C76F#end_sub_clear_carry#
 $C77D#forcefield_check#
+$C781##causes the flashing when it's about to run out
 $C7A7#end_sub#
 $C7AC#draw_player?#
 $C7CE#player_draw#Looks like we are copying the player location to update the OAM sprite
@@ -104,29 +116,33 @@ $CC9C#Set VRAM address#This should set the VRAM address we want to write to
 $CCA2#set PPUSCROLL to 0,0#
 $CCAC##clear bit0, set base nametable address to $2000
 $CCBC#ppu_oam_dma_load#Loads in the data from the 0x0700 OAM buffer
-$CCC7#oam_buffer_flag_clear#Also clears PPU_MASK, probably because they want to draw to it outside of VBLANK?
+$CCC7#clear_oam_buffers#Also clears PPU_MASK, probably because they want to draw to it outside of VBLANK?
 $CCD9#wait for VBLANK#bit7 indicates when a VBLANK is active.  It's also sets negative, so this just whips around waiting for it not to be 1
+$CCE4#ppu_set_interrupts#
+$CCED##turn on NMI
+$CCFE##turn off NMI
 $CD00#write A to PPU_CTRL#
 $CD06#bankswitch_sub_var#switch to bankswitch_target, keep the value of X
 $CD13#bankswitch_sub_a#
-$CD45#some sub#
+$CD45#ppuctrl_set#Sets the bg pattern table addr to 0000
 $CD50#clear p1 input and others#
 $CD72#Set VRAM to 0x2000#
 $CD81#set VRAM to 0x2000#
 $CD8E#Clear PPU loop#
 $CD9E#Clear VRAM C0's#Seems to do 23C0 and 27C0
-$CDAC#oam_600_clear#
+$CDAC#clear_oam_buffer_vars?#
 $CDC0#set_input_read#
-$CDC6#wait#Wait until 0x17 is zero?
-$CDD7#;#Clear some locations, update the anim_timer
+$CDC6#load_intro_text?#Wait until 0x17 is zero?
+$CDD7#gfx_clear_stuffs#Clear some locations, update the anim_timer
 $CDE9#end_sub#
-$CDEA#oam_buffer_fb_slot?#write FB every 4 bytes, to the 'slot' section of the oam buffer
+$CDEA#sprite_clear#write FB every 4 bytes, to the 'Y' section of the oam buffer, pushing them off the screen
+$CDF8#pause_game_check#
 $CE05#pause_check#
 $CE0B#end_sub#
 $CE0C#sfx_pause#
 $CE3F#lsr_ror_dex_table#Looks something up in a table?
 $CE82#some_table?#
-$CFAE##turn off bit 0
+$CFAE##turn off bit 0, set base nametable address to $X000
 $CFBB#bankswitch_check_for_4#If bs_target is 4, set 0x35 to 4, otherwise it's 2
 $CFC5#do_frame#
 $CFD3#do_line#
@@ -136,6 +152,7 @@ $CFE6##
 $CFEB##
 $D000#input_read_complete#Reading the controller ports complete, now smooshing the data?
 $D00C#inputread#Get the input, not it and write it to another var
+$D013##pull the raw input out of the stack and flip it
 $D031#reload_from_stack_and_jmp#Reload CPU from stack
 $D037#go_to_???_jmp_table#Does this without restoring the stack
 $D040#sfx_jmp_table_end?#
@@ -160,7 +177,15 @@ $D3F4#switching_to_bank4#Does this mean we get to eat some graphics data?
 $D3FE#end_sub#
 $D3FF#clear_item_select_tile?#Clears the tile in the main screen that shows the currently selected item?
 $D419#wait_some_cycles#However long it takes to DEX + BNE 169 times
-$D43B#oam_buffer_write_static#703/x_delta=0x40, 702/bitmask=0x20, 701/type=0x5F, 700/slot?y?=0x17, set oam_buffer_flag
+$D41C##is $12 + $24 > #ff?  Set carry if so
+$D42B##increment the accumulator if carry was set
+$D42D##sets the zero flag if it was
+$D433##clear bit0
+$D435##set bit0 using the contents of $02
+$D43B#write_static_score?#Set X to 40
+$D440##Y to 0x17
+$D445##tile 0x5F
+$D44A##set priority to 1, behind the background
 $D478#clear_01c5_0041#
 $D619##LDA $bankswitch_target
 $D61A#bankswitch_to_target#
@@ -170,24 +195,45 @@ $D645##bankswitch to 3
 $D64E#copy_loop#Copy 16 bytes from ROM table to 0x01FA
 $D661##bankswitch to target
 $D667#;#Clear 0x8E, ROL it 4 times
-$D67F#set_chalice_and_level_length#Uses A shifted left once as the table offsets
+$D67F#level_load_attr#A = level_number + 2?  Not sure why.
 $D681##
+$D6A0##cheeky re-use of level_number var?
 $D6A9##set high bit?
-$D6B3#D6!=D1+1#
+$D6B3#D6 != 4#
+$D6BA#end_sub#
 $D6BB#chalice_checks#Called after a full sweep of the grid is completed
+$D6D6#$D1!=$D5#
+$D6D8##clear bit7
 $D6E0#chalice_check?#
-$D6F7##bankswitch to 2
+$D6F5##Checking for greater than 128? sets carry if so
+$D6F7##bankswitch to 2, 3 if the carry is set
+$D709##clear bit7 to prevent overflow problems
+$D70B##shift it left because the data to be fetch is in 2 byte pairs
+$D71E#gfx_buffer_select?#
 $D7AA#l1#
 $D7AE#grid_stuffs?#
+$D833#level_boss_load?#
+$D847#level_normal_load?#
 $D84D#clear_level_vars?#
 $D866#grid_loop_clear_y#
 $D86A#tile_loop_continue#
 $D86C#load_level_tile#
 $D87A#write_tile_data#Gets tile data and offset, writes it to the tile data buffer
 $D88C#inc_sprite_grid_count#The playing field is 0x10 by 0x0D
-$DAB2#level_scroller?#If level_scroll != 12 scroll level?
+$D8FC#level_data_increment#moves the pointer along the level data
+$D903#bankswitch_to_5#
+$D933#load_from_BB00#
+$D938##turn on bit0 and bit1
+$DAB2#check_level_scroll#whether we need to scroll the background layer
+$DABC##12 overflowed
+$DABE##flip bit0, change the nametable address
+$DAC4##flip bit2
+$DACA##checl the first 3 bits for non-zero
+$DAD2##clear bit4-bit7
+$DAD4##double it as the table is 2 byte packed
 $DAD6##read jump table
 $DADE#end_sub#
+$DB94#end_sub#
 $DB95#tile_loop_special_tile?#a8 and AA are both rock tiles
 $DBC9#;#
 $DBDA#no_key#
@@ -215,12 +261,13 @@ $DEAA#bullet_clear#
 $DEC6#rocket_clear#
 $DFD8#bullet_x_old?#
 $DFDC#bullet_y_old?#
-$E05B#zero_c4-c9#
+$E05B#clear_projectiles#
 $E065#sprite_buffer_check?#Looking for bit 7 in C4
-$E0A7#can_we_plant_a_bomb?#
+$E0A7#can_we_plant_a_bomb?#next JSR sets the carry bit if true
 $E0B8#debug_skip_check#Don't bother to check if we have any bombs in inventory if debug or demo mode is turned on
 $E0C1#bomb_check_inventory#Check to see if we have any bombs in the inventory
 $E0C5#bomb_count_skipped#
+$E0CA##all checks are passed, now check to see if we want to lay a bomb
 $E0D0#end_sub#
 $E0D1#we_can_plant_a_bomb#
 $E162#debug_check_skip_bomddec#
@@ -228,8 +275,14 @@ $E16C#sfx_place_bomb#
 $E1CC#find_free_bomb_position#Stores it in X
 $E1D2#dec_x_reg#
 $E1D6#gogo_gadget_bankswitch?#
+$E1FA##check for bit1 or bit7
 $E212#bombtimer_sub#
 $E21E#Bomb pop?#02 = Explosion
+$E222##Set bit7, signals that the bomb is exploding
+$E228##clear the bomb timer
+$E235##clear bit7
+$E237##clear 0x24 if > #15
+$E23B##check bit3?
 $E24F#find_empty_bombslot?#Searches 5 bytes from 0xC4 to find a free slot
 $E2A9#bomb_pickup#Play sound, check if we are in a demo, then increment if bombs < 100
 $E2BC#end_sub#
@@ -319,6 +372,10 @@ $EACF#check_if_tile_empty#If not, push the tile type into the stack and X
 $EADB#wipe_tmp_tile_data#Blanks the item tile we just picked up, also checks to see if it was a stairs tile (0x1E = stairs)
 $EAF1#sfx_pickup_item#Pulls the item_tile number from the stack into A before getting the reward
 $EB04#end_sub#
+$EB0B#level_tile_check-2#
+$EB2B#clear_tile?#
+$EB31#tile_check_80,8D#
+$EB92#end_sub#
 $EBA0#tile2_get_data#Get's the tile2 data from offset Y
 $EBA6#clear_tmp_tile_data#
 $ED90#item_get#First it checks for demo_running, then checks we have less than 100 of an item, then increments it.  X reg contains the offset
@@ -402,9 +459,14 @@ $F81B#oam_load_attr_to_buffer#Store the bytes we pulled out of the table into th
 $F821##set offset to 4.  Don't want to mess around with Sprite 0 because it lives 0700-0703
 $F823#copy_sprite_attr_to_0700_buffer#Y|tileindex|attributes|X
 $F840#init_underground?#
-$FB84#level_number + 6 is in A#
+$F882#treasure_room_start#
+$F895##turn off bit0, set nametable to 0x2000
+$F89B##set player position in the center bottom of the room
+$FB84#tbl_lookup_something#level_number + 6 is in A
+$FBAF#tbl_lookup_again#
 $FBC7#pull_x_from_stack#
-$FBCA#push_y_to_stack#
+$FBCA#gfx_load_data_to_ppu#
+$FBCC##set VRAM increments to 1 (turn off bit2)
 $FBFC#write_16_bytes_to_ppu#Fetchs the address from a lookup table, then writes data from the address into the PPU.  Format seems to be 1 byte length, followed by the ram address
 $FC08##
 $FC0A##clear Y as we reuse it on the inner loop
@@ -413,7 +475,7 @@ $FC0E#inner_loop#runs for 256 bytes?
 $FC14##
 $FC18#dec_x#Runs 16 times
 $FC22#level_gfx_table?#
-$FDCC#lookup_table3?#
+$FDCC#tbl_bankswitch_and_others?#?|Bank?|Size|ROM addr lobyte|ROM addr hibyte
 $FE9E#chalice_table#
 $FEDC#chalice_table_d4-6#
 $FEDD#chalice_table2?#

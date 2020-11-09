@@ -5,7 +5,8 @@ Make bomb item placement more likely to happen
 Candles last forever
 Don't drain energy, smaller enemies take more, big enemies take less
 
-E21A		CMP #30 <-- change that for a longer bomb fuse
+E20A		CMP #50 Change that for a longer fuse
+E21A		CMP #30 <-- change that for a longer explosion?
 07:E509:29 07     AND #$07 <-- Could probably change that and get longer time on the boots powerup
 07:E51E:29 03     AND #$03 Change that to change how long the lifevest lasts
 07:C940:29 03     AND #$03 Longer forcefield time

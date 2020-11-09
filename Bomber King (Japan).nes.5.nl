@@ -1,4 +1,5 @@
 $8000#Some JMPs, SFX related#
+$8003#gfx_init?#
 $8067#end_sub#
 $807D#music_change#OR's it with 0x80 to flag it as complete?
 $8096#clear a load of stuff?#
@@ -22,3 +23,4 @@ $8894#end_sub#
 $889E#some_table#
 $88A2#unknown_sub1#
 $B000#sum_jmp_table#
+$BB00#tbl_0x71#Result gets AND 0x03 and stored in 0x71

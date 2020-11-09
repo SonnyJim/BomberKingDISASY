@@ -22,9 +22,10 @@ FE9E is a table of chalice/screen loop values.  D5 is always cleared, D2 and D3 
 FEDC is a table for D4, D5, D6.  D1 seems to be always started at 3
 FEE0 is a table for level position?
 
-0x8000 is antother table, NFI what it does though.  Something to do with level data?
+0x8000 is the base address for the pattern data
+0xFDCC contains the location and size of each sprite.  size in bytes | addr_hibyte | addr_lobyte,
+0xFC22 contains pointers to the above table?
 
-FC22 is another one, based around level data + 6 x4?  Uses gfx lobyte/highbyte for something
 
 FCAA results go into 0x8F
 
@@ -50,3 +51,4 @@ D040		SFX jmp table.
 DAEO	Jump table
 
 FA26		lookup table.  Get's compared to 0x04AE
+

@@ -1,16 +1,18 @@
-$0000#PPU_CTRL_old#Seems to be a backup of the current PPU_CTRL mask, used to reapply any mask after a clear?
+$0000#ppu_ctrl_mask#Seems to be a backup of the current PPU_CTRL mask, used to reapply any mask after a clear?
 $0001#ppu_mask_to_write#
 $0005#scanline#
 $000E#input_p1#
 $000F#input_p2#
-$0010#input_another#
-$0011#input_bitwiseNot#
+$0010#input_gameplay#Input that has been 'filtered' for the game play,ie doesn't change on subscreen joystick events
+$0011#input_bitmask#Controls whether buttons are sent to the 'main' gameplay, rather than menu items
 $0014#bankswitch_target#
 $0015#bankswitch_target2?#
-$0016#oam_buffer_flag#
+$0016#zero_sprite_hit#
 $0017#flag_inputread?#
 $0019#anim_timer#
 $001A#status_of_something?#Set to 4 when inc_sprite_grid has completed a full set of 13x16
+$001B#sprite_x_asl?#
+$001C#sprite_y_asl?#
 $001D#vram1_addr_lobyte#
 $001E#vram1_addr_hibyte#
 $0021#vram2_addr_hibyte#
@@ -69,8 +71,9 @@ $0076#p1_x#
 $0077#p1_y#
 $0078#p1_dir#0 = East, 1 = West, 2 = South, 3 = North
 $007D#item_forcefield_active#
-$007E#flag_death?#Something to do with the zeroflag?
+$007E#dying#Non-zero if we are in the process of dying
 $007F#sprite_x#
+$0080##
 $0081#sprite_y#
 $0083#oam_tile_index#
 $0084#oam_sprite_palette#This is the palette pulled from the sprite attributes table.
@@ -85,7 +88,7 @@ $008D#lookup_table_lobyte?#health_major ROL'd 4 times/Used as a loop count?
 $008E#lookup_table_hibyte?#Used during E361 to set the location to read from
 $008F#lookup_table2_lobyte#
 $0090#lookup_table2_hibyte#
-$0091#gfx_addr_hibyte#
+$0091#gfx_rom_addr_hibyte#where we are going to load the gfx data from
 $0092#gfx_addr_lobyte#
 $0093#tmp_dir_var#
 $0094#gfx_offset?#
@@ -103,11 +106,13 @@ $00B2#bullet_base_y#Bullet is travelling +/- y
 $00B4#bullet2_y#
 $00BB#bullet_direction#Stores which direction the bullets are travelling in
 $00BD#bullet2_dir#
-$00C4#base_bombs?#
+$00C4#projectile_base#Slots for the bullets/bombs
 $00C5#bomb_placed?/bullet_dir#
 $00CD#gfx_buffer_select#Writing non-zero causes the tiles to be sent to the second buffer
 $00CF#NMI_vector_base#
-$00D0#level_position#
+$00D0#level_attr_mask?#
+$00D2#level_attr_addr_lobyte#
+$00D3#level_attr_addr_hibyte#
 $00E0#enemy_type#
 $00E1#enemy2_type#
 $00E2#enemy3_type#
@@ -222,5 +227,8 @@ $0528#enemy_last_killed#
 $0529#magic_pool_activated#Set to 1 when you walk into a magic pool.  Seems that there's code for 3, which clears all your bombs
 $0600#vram_addr_table#
 $061D#tile_item_selected#
-$0700#oam_buffer#Used to DMA data into the OAM
+$0700#oam_attr_buffer#Used to DMA sprite attribute data into the OAM.  Gets a lot of shuffling around so we can 'show more sprites than 100' ie sprite flicker
+$0701#oam_static?_tile_index#
+$0702#oam_static?_attrs#
+$0703#oam_static?_x#
 $0704#player sprite data?#

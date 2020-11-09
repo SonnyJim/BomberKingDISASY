@@ -1,6 +1,7 @@
 $800D#music_check_current#Checks to see if the music needs changing?
 $800F#jmp_967F#
 $8012#check_enemy_slot_loop#
+$8021#jmp_list_macdaddy#
 $8033#credits?#
 $817B#music_more?#
 $867A#enemy_type_table?#
@@ -140,6 +141,7 @@ $A961#enemy_movement_bmi_???#
 $A968#check_themesong_flag#
 $AA28#vblank_wait#
 $AA3C#debug_change_level#First part is button detection? then the rest is bounds checking
+$AA62#clear_zero_sprite_n_jmp#
 $B9E9#bomb_sub??#
 $B9FB#bomb_popped?#
 $BAAB#increment_tile_data#Gets called when a multihit block gets bombed
